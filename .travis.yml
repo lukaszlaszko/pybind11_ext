@@ -172,6 +172,7 @@ script:
   - cd bin
   - cmake -GNinja ${CMAKE_OPTIONS} ..
   - cmake --build . --target all
+  - cmake --build . --target install-python-requirements
   - ctest --verbose
 
 after_success:
