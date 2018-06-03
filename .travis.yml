@@ -154,6 +154,13 @@ install:
   - |
       export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DPYTHON_VERSION=${PYTHON}"
 
+  # Install Python packages through pip
+  - |
+      wget https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      python${PYTHON} get-pip.py
+
+      python${PYTHON} -m pip install -r tests/python/requirements.txt
+
   # Update references on OSX
   - |
       if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
@@ -172,7 +179,6 @@ script:
   - cd bin
   - cmake -GNinja ${CMAKE_OPTIONS} ..
   - cmake --build . --target all
-  - cmake --build . --target install-python-requirements
   - ctest --verbose
 
 after_success:
