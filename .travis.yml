@@ -158,7 +158,7 @@ install:
   - |
       export PYTHON_EXECUTABLE="python${PYTHON}"
 
-      wget https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
       ${PYTHON_EXECUTABLE} get-pip.py
       ${PYTHON_EXECUTABLE} -m pip install -r tests/python/requirements.txt
 
