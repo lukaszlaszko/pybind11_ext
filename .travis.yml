@@ -165,16 +165,16 @@ install:
       fi
 
   # Install Python packages through pip
-    - |
-        if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-          export PYTHON_EXECUTABLE="/usr/local/bin/python${PYTHON}"
-        else
-          export PYTHON_EXECUTABLE="python${PYTHON}"
-        fi
+  - |
+      if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+        export PYTHON_EXECUTABLE="/usr/local/bin/python${PYTHON}"
+      else
+        export PYTHON_EXECUTABLE="python${PYTHON}"
+      fi
 
-        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-        ${PYTHON_EXECUTABLE} get-pip.py --user
-        ${PYTHON_EXECUTABLE} -m pip install --user -r tests/python/requirements.txt
+      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      ${PYTHON_EXECUTABLE} get-pip.py --user
+      ${PYTHON_EXECUTABLE} -m pip install --user -r tests/python/requirements.txt
 
   # Setup code coverage for GCC builds
   - |
