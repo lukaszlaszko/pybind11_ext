@@ -107,8 +107,8 @@ TYPED_TEST_P(boost_optional_test, cast_load)
 
 REGISTER_TYPED_TEST_CASE_P(boost_optional_test, cast_load);
 
-static const char test_string[] = "abc";
-static const double test_double = 78.96;
+static constexpr char test_string[] = "abc";
+static constexpr double test_double = 78.96;
 using test_fixtures = Types<
         boost_optional::test_fixture<int, true, 5>,
         boost_optional::test_fixture<int, false>,
