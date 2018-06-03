@@ -167,9 +167,9 @@ install:
   # Install Python packages through pip
     - |
         if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-            export PYTHON_EXECUTABLE="/usr/local/bin/python${PYTHON}"
+          export PYTHON_EXECUTABLE="/usr/local/bin/python${PYTHON}"
         else
-            export PYTHON_EXECUTABLE="python${PYTHON}"
+          export PYTHON_EXECUTABLE="python${PYTHON}"
         fi
 
         curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
