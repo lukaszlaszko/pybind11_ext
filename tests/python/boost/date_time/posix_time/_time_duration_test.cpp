@@ -36,6 +36,14 @@ PYBIND11_MODULE(_time_duration_test, m) {
 
     });
 
+    m.def("parse_duration", [](const string& str_arg) -> time_duration
+    {
+        if (str_arg.empty())
+            return not_a_date_time;
+
+        return duration_from_string(str_arg);
+    });
+
 }
 
 
