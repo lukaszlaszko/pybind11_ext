@@ -141,6 +141,7 @@ install:
 
         export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DBOOST_ROOT=${DEPS_DIR}/boost"
       fi
+
   # Setup compilers
   - |
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
@@ -150,17 +151,10 @@ install:
         if [[ "${CXX_COMPILER}" != "" ]]; then export CXX=${CXX_COMPILER}; fi
         ${CXX} --version
       fi
+
   # Setup desired python version
   - |
       export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DPYTHON_VERSION=${PYTHON}"
-
-  # Install Python packages through pip
-  - |
-      export PYTHON_EXECUTABLE="python${PYTHON}"
-
-      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-      ${PYTHON_EXECUTABLE} get-pip.py --user
-      ${PYTHON_EXECUTABLE} -m pip install --user -r tests/python/requirements.txt
 
   # Update references on OSX
   - |
@@ -169,6 +163,15 @@ install:
         brew install ninja
         brew upgrade python
       fi
+
+  # Install Python packages through pip
+    - |
+        export PYTHON_EXECUTABLE="python${PYTHON}"
+
+        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        ${PYTHON_EXECUTABLE} get-pip.py --user
+        ${PYTHON_EXECUTABLE} -m pip install --user -r tests/python/requirements.txt
+
   # Setup code coverage for GCC builds
   - |
       if [[ "${CODECOV}" == "yes" ]]; then
