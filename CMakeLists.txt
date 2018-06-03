@@ -11,6 +11,9 @@ endif()
 set(PYBIND11_VERSION "2.2.3" CACHE STRING "Version of pybind11 this project will provide extension to.")
 message(STATUS "pybind11 version: ${PYBIND11_VERSION}")
 
+set(PYTHON_VERSION 3 CACHE STRING "Target version of python")
+message(STATUS "Requested python version: ${PYTHON_VERSION}")
+
 # register modules
 include(CTest)
 include(ExternalProject)
@@ -25,8 +28,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 # find python
-find_package(PythonInterp)
-find_package(PythonLibs)
+find_package(PythonInterp ${PYTHON_VERSION})
+find_package(PythonLibs ${PYTHON_VERSION})
 
 if (PYTHONINTERP_FOUND)
     message(STATUS "Found Python interpreter: ${PYTHON_VERSION_STRING}")

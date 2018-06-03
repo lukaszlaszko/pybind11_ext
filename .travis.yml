@@ -3,8 +3,8 @@ language: cpp
 env:
   global:
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
-#    - BOOST_VERSION=1.65.1
-#    - BOOST_URL="https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
+    - BOOST_VERSION=1.65.1
+    - BOOST_URL="https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
     - CODECOV=no
 
 cache:
@@ -16,7 +16,7 @@ matrix:
     - os: linux
       dist: trusty
       sudo: false
-      env: CC_COMPILER=clang-4.0 CXX_COMPILER=clang++-4.0
+      env: CC_COMPILER=clang-4.0 CXX_COMPILER=clang++-4.0 PYTHON=3.6
       addons:
         apt:
           update: true
@@ -28,13 +28,12 @@ matrix:
             - clang-4.0
             - libstdc++-6-dev
             - ninja-build
-            - libboost-all-dev
             - python3.6-dev
 
     - os: linux
       dist: trusty
       sudo: false
-      env: CC_COMPILER=clang-5.0 CXX_COMPILER=clang++-5.0
+      env: CC_COMPILER=clang-5.0 CXX_COMPILER=clang++-5.0 PYTHON=3.6
       addons:
         apt:
           update: true
@@ -46,13 +45,12 @@ matrix:
             - clang-5.0
             - libstdc++-6-dev
             - ninja-build
-            - libboost-all-dev
             - python3.6-dev
 
     - os: linux
       dist: trusty
       sudo: false
-      env: CC_COMPILER=clang-6.0 CXX_COMPILER=clang++-6.0
+      env: CC_COMPILER=clang-6.0 CXX_COMPILER=clang++-6.0 PYTHON=3.6
       addons:
         apt:
           update: true
@@ -64,13 +62,12 @@ matrix:
             - clang-6.0
             - libstdc++-6-dev
             - ninja-build
-            - libboost-all-dev
             - python3.6-dev
 
     - os: linux
       dist: trusty
       sudo: false
-      env: CC_COMPILER=gcc-6 CXX_COMPILER=g++-6 CODECOV=no
+      env: CC_COMPILER=gcc-6 CXX_COMPILER=g++-6 CODECOV=no PYTHON=3.6
       addons:
         apt:
           update: true
@@ -80,13 +77,12 @@ matrix:
           packages:
             - g++-6
             - ninja-build
-            - libboost-all-dev
             - python3.6-dev
 
     - os: linux
       dist: trusty
       sudo: false
-      env: CC_COMPILER=gcc-7 CXX_COMPILER=g++-7 CODECOV=yes
+      env: CC_COMPILER=gcc-7 CXX_COMPILER=g++-7 CODECOV=yes PYTHON=3.6
       addons:
         apt:
           update: true
@@ -96,21 +92,20 @@ matrix:
           packages:
             - g++-7
             - ninja-build
-            - libboost-all-dev
             - python3.6-dev
             - lcov
 
     - os: osx
       osx_image: xcode9.3
-      env: BUILD_TYPE=Debug
+      env: BUILD_TYPE=Debug PYTHON=3.6
 
     - os: osx
       osx_image: xcode9.2
-      env: BUILD_TYPE=Debug
+      env: BUILD_TYPE=Debug PYTHON=3.6
 
     - os: osx
       osx_image: xcode9.1
-      env: BUILD_TYPE=Debug
+      env: BUILD_TYPE=Debug PYTHON=3.6
 
 
 before_install:
@@ -121,31 +116,31 @@ before_install:
 
 install:
   # Download and install Boost
-#  - |
-#      if [[ ${TRAVIS_OS_NAME} == "linux" && ${BOOST_VERSION} != "default" ]]; then
-#        if [ ! -f "${DEPS_DIR}/boost/${BOOST_VERSION}_cached" ]; then
-#          # create dirs for source and install
-#          mkdir -p ${DEPS_DIR}/boost${BOOST_VERSION}
-#          mkdir -p ${DEPS_DIR}/boost
-#          rm -rf ${DEPS_DIR}/boost/*
-#
-#          # download
-#          travis_retry wget --no-check-certificate --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/boost${BOOST_VERSION}
-#          pushd ${DEPS_DIR}/boost${BOOST_VERSION}
-#
-#          # configure and install
-#          if [ "$CXX" = "${CXX_COMPILER}" ]; then echo "using cc : ${CC_COMPILER} : ${CXX_COMPILER} ;" > $HOME/user-config.jam; fi
-#          ./bootstrap.sh --prefix=${DEPS_DIR}/boost/ --with-libraries=system,program_options,date_time,filesystem,regex,log
-#          ./b2 -j 4 -d0 install
-#          popd
-#          rm -rf ${DEPS_DIR}/boost/include/boost/{compute,compute.hpp}
-#          touch ${DEPS_DIR}/boost/${BOOST_VERSION}_cached
-#        else
-#          echo "Using cached Boost ${BOOST_VERSION} libraries."
-#        fi
-#
-#        export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DBOOST_ROOT=${DEPS_DIR}/boost"
-#      fi
+  - |
+      if [[ ${TRAVIS_OS_NAME} == "linux" && ${BOOST_VERSION} != "default" ]]; then
+        if [ ! -f "${DEPS_DIR}/boost/${BOOST_VERSION}_cached" ]; then
+          # create dirs for source and install
+          mkdir -p ${DEPS_DIR}/boost${BOOST_VERSION}
+          mkdir -p ${DEPS_DIR}/boost
+          rm -rf ${DEPS_DIR}/boost/*
+
+          # download
+          travis_retry wget --no-check-certificate --quiet -O - ${BOOST_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/boost${BOOST_VERSION}
+          pushd ${DEPS_DIR}/boost${BOOST_VERSION}
+
+          # configure and install
+          if [ "$CXX" = "${CXX_COMPILER}" ]; then echo "using cc : ${CC_COMPILER} : ${CXX_COMPILER} ;" > $HOME/user-config.jam; fi
+          ./bootstrap.sh --prefix=${DEPS_DIR}/boost/ --with-libraries=system,program_options,date_time,filesystem,regex,log
+          ./b2 -j 4 -d0 install
+          popd
+          rm -rf ${DEPS_DIR}/boost/include/boost/{compute,compute.hpp}
+          touch ${DEPS_DIR}/boost/${BOOST_VERSION}_cached
+        else
+          echo "Using cached Boost ${BOOST_VERSION} libraries."
+        fi
+
+        export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DBOOST_ROOT=${DEPS_DIR}/boost"
+      fi
   # Setup compilers
   - |
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
@@ -155,12 +150,16 @@ install:
         if [[ "${CXX_COMPILER}" != "" ]]; then export CXX=${CXX_COMPILER}; fi
         ${CXX} --version
       fi
+  # Setup desired python version
+  - |
+      export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DPYTHON_VERSION=${PYTHON}"
+
   # Update references on OSX
   - |
       if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
         brew install boost
         brew install ninja
-        brew install python3
+        brew upgrade python
       fi
   # Setup code coverage for GCC builds
   - |
