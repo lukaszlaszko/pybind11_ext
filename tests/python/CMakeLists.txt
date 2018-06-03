@@ -26,4 +26,5 @@ endforeach()
 add_test(NAME run-python-unit-tests COMMAND ${PYTHON_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(install-python-requirements
+        COMMAND ${PYTHON_EXECUTABLE} -m pip install --user --upgrade pip wheel
         COMMAND ${PYTHON_EXECUTABLE} -m pip install -r ${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt)
