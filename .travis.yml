@@ -156,10 +156,11 @@ install:
 
   # Install Python packages through pip
   - |
+      export PYTHON_EXECUTABLE="python${PYTHON}"
       wget https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-      python${PYTHON} get-pip.py
+      $PYTHON_EXECUTABLE get-pip.py
 
-      python${PYTHON} -m pip install -r tests/python/requirements.txt
+      $PYTHON_EXECUTABLE -m pip install -r tests/python/requirements.txt
 
   # Update references on OSX
   - |
