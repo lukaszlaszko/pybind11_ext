@@ -154,9 +154,11 @@ inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(size_t offset)
     auto first_element = base_circular_buffer::array_one();
     pybind11::buffer_info buffer(
             reinterpret_cast<uint8_t*>(first_element.first) + offset,   /* Pointer to buffer */
-            sizeof(T),                                                  /* Size of one scalar */
+            sizeof(V),                                                  /* Size of one scalar */
             pybind11::format_descriptor<V>::format(),                   /* Python struct-style format descriptor */
-            base_circular_buffer::size());                              /* Buffer dimensions */
+            1,                                                          /* Number of dimensions */
+            {base_circular_buffer::size()},                             /* Buffer dimensions */
+            {sizeof(T)});                                               /* Number of entries between adjacent entries (for each per dimension) */
 
     pybind11::readonly_memoryview view(buffer);
     auto result = array(view, pybind11::arg(copy_arg) = false);
