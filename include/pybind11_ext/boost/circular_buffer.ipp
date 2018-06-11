@@ -122,7 +122,7 @@ inline numpy_circular_buffer<T>::numpy_circular_buffer(size_t capacity)
     :
         base_circular_buffer(round_to_page_size(capacity))
 {
-    base_circular_buffer::reserve();
+
 }
 
 template <typename T>
