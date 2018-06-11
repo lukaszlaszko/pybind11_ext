@@ -123,10 +123,10 @@ TEST(numpy_circular_buffer, to_array__custom)
     ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
 
     // empty
-//    {
-//        auto array = buffer.to_array<int>(offsetof(test_type, field_1));
-//        ASSERT_EQ(array.size(), buffer.size());
-//    }
+    {
+        auto array = buffer.to_array<int>(offsetof(test_type, field_1));
+        ASSERT_EQ(array.size(), buffer.size());
+    }
 
     // fill with data
     {
@@ -153,12 +153,12 @@ TEST(numpy_circular_buffer, to_array__custom)
         ASSERT_EQ(array_field_3.at(2), 'c');
     }
 
-//    // consume all
-//    {
-//        while (!buffer.empty())
-//            buffer.pop_front();
-//
-//        auto array = buffer.to_array<int>();
-//        ASSERT_EQ(array.size(), 0u);
-//    }
+    // consume all
+    {
+        while (!buffer.empty())
+            buffer.pop_front();
+
+        auto array = buffer.to_array<int>();
+        ASSERT_EQ(array.size(), 0u);
+    }
 }
