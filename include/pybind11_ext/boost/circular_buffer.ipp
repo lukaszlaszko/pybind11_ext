@@ -9,6 +9,7 @@
 #include <list>
 #include <memory>
 #include <stdexcept>
+#include <type_traits>
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -138,22 +139,11 @@ inline size_t numpy_circular_buffer<T>::round_to_page_size(size_t capacity)
 }
 
 template <typename T>
-inline readonly_memoryview numpy_circular_buffer<T>::to_memoryview(size_t offset)
-{
-    auto first_element = base_circular_buffer::array_one();
-    pybind11::buffer_info buffer(
-            first_element.first,                        /* Pointer to buffer */
-            sizeof(T),                                  /* Size of one scalar */
-            pybind11::format_descriptor<T>::format(),   /* Python struct-style format descriptor */
-            base_circular_buffer::size());              /* Buffer dimensions */
-
-    return pybind11::readonly_memoryview(buffer);
-}
-
-template <typename T>
 template <typename V>
 inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(size_t offset)
 {
+    static_assert(std::is_scalar<V>::value, "scalar type is expected as array element!");
+
     static constexpr auto numpy_module = "numpy";
     static constexpr auto array_attribute = "array";
     static constexpr auto copy_arg = "copy";
@@ -163,10 +153,10 @@ inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(size_t offset)
 
     auto first_element = base_circular_buffer::array_one();
     pybind11::buffer_info buffer(
-            reinterpret_cast<uint8_t*>(first_element.first) + offset,               /* Pointer to buffer */
-            sizeof(T),                                  /* Size of one scalar */
-            pybind11::format_descriptor<V>::format(),   /* Python struct-style format descriptor */
-            base_circular_buffer::size());              /* Buffer dimensions */
+            reinterpret_cast<uint8_t*>(first_element.first) + offset,   /* Pointer to buffer */
+            sizeof(T),                                                  /* Size of one scalar */
+            pybind11::format_descriptor<V>::format(),                   /* Python struct-style format descriptor */
+            base_circular_buffer::size());                              /* Buffer dimensions */
 
     pybind11::readonly_memoryview view(buffer);
     auto result = array(view, pybind11::arg(copy_arg) = false);

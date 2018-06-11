@@ -53,8 +53,6 @@ class numpy_circular_buffer : public boost::circular_buffer<T, allocator<T>>
 public:
     explicit numpy_circular_buffer(size_t capacity);
 
-    readonly_memoryview to_memoryview(size_t offset = 0u);
-
     template <typename V = T>
     pybind11::array_t<V> to_array(size_t offset = 0u);
 
