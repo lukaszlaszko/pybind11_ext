@@ -120,13 +120,13 @@ TEST(numpy_circular_buffer, to_array__custom)
 
     py::scoped_interpreter interpreter;
     py::detail::numpy_circular_buffer<test_type> buffer(1);
-    ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
-
-    // empty
-    {
-        auto array = buffer.to_array<int>(offsetof(test_type, field_1));
-        ASSERT_EQ(array.size(), buffer.size());
-    }
+//    ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
+//
+//    // empty
+//    {
+//        auto array = buffer.to_array<int>(offsetof(test_type, field_1));
+//        ASSERT_EQ(array.size(), buffer.size());
+//    }
 
 //    // fill with data
 //    {
