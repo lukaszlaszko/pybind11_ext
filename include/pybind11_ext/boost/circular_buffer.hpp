@@ -54,7 +54,7 @@ public:
     explicit numpy_circular_buffer(size_t capacity);
 
     template <typename V = T>
-    pybind11::array_t<V> to_array(size_t offset = 0u);
+    pybind11::array_t<V> to_array(ptrdiff_t offset = 0u);
 
 
 private:

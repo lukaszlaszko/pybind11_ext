@@ -120,6 +120,7 @@ TEST(numpy_circular_buffer, to_array__custom)
 
     py::scoped_interpreter interpreter;
     py::detail::numpy_circular_buffer<test_type> buffer(1);
+    ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
 
     // empty
     {
@@ -129,15 +130,21 @@ TEST(numpy_circular_buffer, to_array__custom)
 
     // fill with data
     {
-        buffer.push_back({1, 0, 'a'});
-        buffer.push_back({2, 0, 'b'});
-        buffer.push_back({3, 0, 'c'});
+        buffer.push_back({1, 1.1, 'a'});
+        buffer.push_back({2, 2.2, 'b'});
+        buffer.push_back({3, 3.3, 'c'});
 
         auto array_field_1 = buffer.to_array<int>(offsetof(test_type, field_1));
         ASSERT_EQ(array_field_1.size(), buffer.size());
         ASSERT_EQ(array_field_1.at(0), 1u);
         ASSERT_EQ(array_field_1.at(1), 2u);
         ASSERT_EQ(array_field_1.at(2), 3u);
+
+        auto array_field_2 = buffer.to_array<double>(offsetof(test_type, field_2));
+        ASSERT_DOUBLE_EQ(array_field_2.size(), buffer.size());
+        ASSERT_DOUBLE_EQ(array_field_2.at(0), 1.1);
+        ASSERT_DOUBLE_EQ(array_field_2.at(1), 2.2);
+        ASSERT_DOUBLE_EQ(array_field_2.at(2), 3.3);
 
         auto array_field_3 = buffer.to_array<char>(offsetof(test_type, field_3));
         ASSERT_EQ(array_field_3.size(), buffer.size());

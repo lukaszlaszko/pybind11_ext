@@ -140,7 +140,7 @@ inline size_t numpy_circular_buffer<T>::round_to_page_size(size_t capacity)
 
 template <typename T>
 template <typename V>
-inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(size_t offset)
+inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(ptrdiff_t offset)
 {
     static_assert(std::is_scalar<V>::value, "scalar type is expected as array element!");
 
