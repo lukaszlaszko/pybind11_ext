@@ -111,7 +111,7 @@ TEST(numpy_circular_buffer, to_array__int)
 
 TEST(numpy_circular_buffer, to_array__custom)
 {
-    struct alignas(16) test_type
+    struct alignas(32) test_type
     {
         int field_1;
         double field_2;
