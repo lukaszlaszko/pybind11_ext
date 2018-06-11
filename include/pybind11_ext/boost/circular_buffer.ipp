@@ -154,18 +154,22 @@ template <typename T>
 template <typename V>
 inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(size_t offset)
 {
-    auto numpy = pybind11::module::import("numpy");
-    auto array = numpy.attr("array").cast<pybind11::function>();
+    static constexpr auto numpy_module = "numpy";
+    static constexpr auto array_attribute = "array";
+    static constexpr auto copy_arg = "copy";
+
+    auto numpy = pybind11::module::import(numpy_module);
+    auto array = numpy.attr(array_attribute).cast<pybind11::function>();
 
     auto first_element = base_circular_buffer::array_one();
     pybind11::buffer_info buffer(
-            first_element.first,                        /* Pointer to buffer */
-            sizeof(V),                                  /* Size of one scalar */
+            reinterpret_cast<uint8_t*>(first_element.first) + offset,               /* Pointer to buffer */
+            sizeof(T),                                  /* Size of one scalar */
             pybind11::format_descriptor<V>::format(),   /* Python struct-style format descriptor */
             base_circular_buffer::size());              /* Buffer dimensions */
 
     pybind11::readonly_memoryview view(buffer);
-    auto result = array(view, pybind11::arg("copy") = false);
+    auto result = array(view, pybind11::arg(copy_arg) = false);
 
     return result;
 }

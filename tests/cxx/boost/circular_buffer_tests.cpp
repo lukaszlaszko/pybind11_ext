@@ -52,7 +52,7 @@ TEST(numpy_circular_buffer, create__custom__aligned__single)
     ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
 }
 
-TEST(numpy_circular_buffer, to_array)
+TEST(numpy_circular_buffer, to_array__int)
 {
     py::scoped_interpreter interpreter;
 
@@ -105,6 +105,53 @@ TEST(numpy_circular_buffer, to_array)
             buffer.pop_front();
 
         auto array = buffer.to_array();
+        ASSERT_EQ(array.size(), 0u);
+    }
+}
+
+TEST(numpy_circular_buffer, to_array__custom)
+{
+    struct alignas(16) test_type
+    {
+        int field_1;
+        double field_2;
+        char field_3;
+    };
+
+    py::scoped_interpreter interpreter;
+    py::detail::numpy_circular_buffer<test_type> buffer(1);
+
+    // empty
+    {
+        auto array = buffer.to_array<int>(offsetof(test_type, field_1));
+        ASSERT_EQ(array.size(), buffer.size());
+    }
+
+    // fill with data
+    {
+        buffer.push_back({1, 0, 'a'});
+        buffer.push_back({2, 0, 'b'});
+        buffer.push_back({3, 0, 'c'});
+
+        auto array_field_1 = buffer.to_array<int>(offsetof(test_type, field_1));
+        ASSERT_EQ(array_field_1.size(), buffer.size());
+        ASSERT_EQ(array_field_1.at(0), 1u);
+        ASSERT_EQ(array_field_1.at(1), 2u);
+        ASSERT_EQ(array_field_1.at(2), 3u);
+
+        auto array_field_3 = buffer.to_array<char>(offsetof(test_type, field_3));
+        ASSERT_EQ(array_field_3.size(), buffer.size());
+        ASSERT_EQ(array_field_3.at(0), 'a');
+        ASSERT_EQ(array_field_3.at(1), 'b');
+        ASSERT_EQ(array_field_3.at(2), 'c');
+    }
+
+    // consume all
+    {
+        while (!buffer.empty())
+            buffer.pop_front();
+
+        auto array = buffer.to_array<int>();
         ASSERT_EQ(array.size(), 0u);
     }
 }
