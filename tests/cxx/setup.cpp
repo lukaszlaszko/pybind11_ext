@@ -2,6 +2,8 @@
 #include <gmock/gmock.h>
 
 #include <csignal>
+#include <iostream>
+
 #include <execinfo.h>
 
 using namespace std;
@@ -10,14 +12,14 @@ using namespace testing;
 
 void handler(int sig)
 {
-    void *array[10];
+    void *array[20];
     size_t size;
 
     // get void*'s for all entries on the stack
-    size = backtrace(array, 10);
+    size = backtrace(array, 20);
 
     // print out all the frames to stderr
-    fprintf(stderr, "Error: signal %d:\n", sig);
+    cerr << "Error: signal " << sig << ":" << endl;
     backtrace_symbols_fd(array, size, STDERR_FILENO);
     exit(1);
 }
