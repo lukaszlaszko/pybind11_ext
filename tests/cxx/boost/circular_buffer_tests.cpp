@@ -17,14 +17,13 @@ namespace py = pybind11;
 TEST(numpy_circular_buffer, create__char__single)
 {
     py::detail::numpy_circular_buffer<char> buffer(1);
-    ASSERT_EQ(buffer.capacity(), getpagesize());
-
+    ASSERT_EQ(buffer.capacity(), size_t(getpagesize()));
 }
 
 TEST(numpy_circular_buffer, create__int__single)
 {
     py::detail::numpy_circular_buffer<int> buffer(1);
-    ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(int));
+    ASSERT_EQ(buffer.capacity(), size_t(getpagesize() / sizeof(int)));
 }
 
 TEST(numpy_circular_buffer, create__custom__not_aligned__single)
@@ -49,7 +48,7 @@ TEST(numpy_circular_buffer, create__custom__aligned__single)
     };
 
     py::detail::numpy_circular_buffer<test_type> buffer(1);
-    ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
+    ASSERT_EQ(buffer.capacity(), size_t(getpagesize() / sizeof(test_type)));
 }
 
 TEST(numpy_circular_buffer, to_array__int)
@@ -59,7 +58,7 @@ TEST(numpy_circular_buffer, to_array__int)
     // empty
     {
         auto array = buffer.to_array();
-        ASSERT_EQ(array.size(), buffer.size());
+        ASSERT_EQ(array.size(), ssize_t(buffer.size()));
     }
 
     // fill with data
@@ -69,10 +68,10 @@ TEST(numpy_circular_buffer, to_array__int)
         buffer.push_back(3);
 
         auto array = buffer.to_array();
-        ASSERT_EQ(array.size(), buffer.size());
-        ASSERT_EQ(array.at(0), 1u);
-        ASSERT_EQ(array.at(1), 2u);
-        ASSERT_EQ(array.at(2), 3u);
+        ASSERT_EQ(array.size(), ssize_t(buffer.size()));
+        ASSERT_EQ(array.at(0), 1);
+        ASSERT_EQ(array.at(1), 2);
+        ASSERT_EQ(array.at(2), 3);
     }
 
     // consume head
@@ -80,9 +79,9 @@ TEST(numpy_circular_buffer, to_array__int)
         buffer.pop_front();
 
         auto array = buffer.to_array();
-        ASSERT_EQ(array.size(), buffer.size());
-        ASSERT_EQ(array.at(0), 2u);
-        ASSERT_EQ(array.at(1), 3u);
+        ASSERT_EQ(array.size(), ssize_t(buffer.size()));
+        ASSERT_EQ(array.at(0), 2);
+        ASSERT_EQ(array.at(1), 3);
     }
 
     // fill capacity
@@ -91,7 +90,7 @@ TEST(numpy_circular_buffer, to_array__int)
             buffer.push_back(i);
 
         auto array = buffer.to_array();
-        ASSERT_EQ(array.size(), buffer.size());
+        ASSERT_EQ(array.size(), ssize_t(buffer.size()));
 
         for (auto i = 0u; i < buffer.size(); i++)
             ASSERT_EQ(buffer.at(i), array.at(i));
@@ -117,12 +116,12 @@ TEST(numpy_circular_buffer, to_array__custom)
     };
 
     py::detail::numpy_circular_buffer<test_type> buffer(1);
-    ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
+    ASSERT_EQ(buffer.capacity(), size_t(getpagesize() / sizeof(test_type)));
 
     // empty
     {
         auto array = buffer.to_array<int>(offsetof(test_type, field_1));
-        ASSERT_EQ(array.size(), buffer.size());
+        ASSERT_EQ(array.size(), ssize_t(buffer.size()));
     }
 
     // fill with data
@@ -132,10 +131,10 @@ TEST(numpy_circular_buffer, to_array__custom)
         buffer.push_back({3, 3.3, 'c'});
 
         auto array_field_1 = buffer.to_array<int>(offsetof(test_type, field_1));
-        ASSERT_EQ(array_field_1.size(), buffer.size());
-        ASSERT_EQ(array_field_1.at(0), 1u);
-        ASSERT_EQ(array_field_1.at(1), 2u);
-        ASSERT_EQ(array_field_1.at(2), 3u);
+        ASSERT_EQ(array_field_1.size(), ssize_t(buffer.size()));
+        ASSERT_EQ(array_field_1.at(0), 1);
+        ASSERT_EQ(array_field_1.at(1), 2);
+        ASSERT_EQ(array_field_1.at(2), 3);
 
         auto array_field_2 = buffer.to_array<double>(offsetof(test_type, field_2));
         ASSERT_DOUBLE_EQ(array_field_2.size(), buffer.size());
@@ -144,7 +143,7 @@ TEST(numpy_circular_buffer, to_array__custom)
         ASSERT_DOUBLE_EQ(array_field_2.at(2), 3.3);
 
         auto array_field_3 = buffer.to_array<char>(offsetof(test_type, field_3));
-        ASSERT_EQ(array_field_3.size(), buffer.size());
+        ASSERT_EQ(array_field_3.size(), ssize_t(buffer.size()));
         ASSERT_EQ(array_field_3.at(0), 'a');
         ASSERT_EQ(array_field_3.at(1), 'b');
         ASSERT_EQ(array_field_3.at(2), 'c');

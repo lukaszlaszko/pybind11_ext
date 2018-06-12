@@ -5,7 +5,7 @@
 
 namespace pybind11 {
 
-class readonly_memoryview : public object {
+class __attribute__((visibility("default"))) readonly_memoryview : public object {
 public:
     explicit readonly_memoryview(const buffer_info& info);
 
