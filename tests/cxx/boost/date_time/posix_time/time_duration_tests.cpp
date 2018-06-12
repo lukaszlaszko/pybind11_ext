@@ -36,7 +36,6 @@ class boost_posix_time_time_duration_test : public TestWithParam<boost_posix_tim
 
 TEST_P(boost_posix_time_time_duration_test, cast_load)
 {
-    py::scoped_interpreter interpreter;
     py::module::import("datetime");
 
     auto& fixture = GetParam();

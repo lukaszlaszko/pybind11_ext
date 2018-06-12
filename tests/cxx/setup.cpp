@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <pybind11/embed.h>
+
 #include <csignal>
 #include <iostream>
 
@@ -8,6 +10,7 @@
 
 using namespace std;
 using namespace testing;
+namespace py = pybind11;
 
 
 void handler(int sig)
@@ -23,6 +26,8 @@ void handler(int sig)
     backtrace_symbols_fd(array, size, STDERR_FILENO);
     exit(1);
 }
+
+py::scoped_interpreter interpreter;
 
 struct global_environment : Environment
 {

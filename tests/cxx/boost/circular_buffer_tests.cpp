@@ -54,8 +54,6 @@ TEST(numpy_circular_buffer, create__custom__aligned__single)
 
 TEST(numpy_circular_buffer, to_array__int)
 {
-    py::scoped_interpreter interpreter;
-
     py::detail::numpy_circular_buffer<int> buffer(1024);
 
     // empty
@@ -118,7 +116,6 @@ TEST(numpy_circular_buffer, to_array__custom)
         char field_3;
     };
 
-    py::scoped_interpreter interpreter;
     py::detail::numpy_circular_buffer<test_type> buffer(1);
     ASSERT_EQ(buffer.capacity(), getpagesize() / sizeof(test_type));
 

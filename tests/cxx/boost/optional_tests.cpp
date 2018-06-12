@@ -83,8 +83,6 @@ TYPED_TEST_CASE_P(boost_optional_test);
 
 TYPED_TEST_P(boost_optional_test, cast_load)
 {
-    py::scoped_interpreter interpreter;
-
     auto original_value = TypeParam::get_value();
     auto is_none = TypeParam::is_none;
 
