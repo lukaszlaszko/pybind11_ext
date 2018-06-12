@@ -136,6 +136,22 @@ inline size_t numpy_circular_buffer<T>::round_to_page_size(size_t capacity)
 
 template <typename T>
 template <typename V>
+inline readonly_memoryview numpy_circular_buffer<T>::to_memoryview(ptrdiff_t offset)
+{
+    auto first_element = base_circular_buffer::array_one();
+    pybind11::buffer_info buffer(
+            reinterpret_cast<uint8_t*>(first_element.first) + offset,   /* Pointer to buffer */
+            sizeof(V),                                                  /* Size of one scalar */
+            pybind11::format_descriptor<V>::format(),                   /* Python struct-style format descriptor */
+            1,                                                          /* Number of dimensions */
+            {base_circular_buffer::size()},                             /* Buffer dimensions */
+            {sizeof(T)});                                               /* Number of entries between adjacent entries (for each per dimension) */
+
+    return pybind11::readonly_memoryview(buffer);
+}
+
+template <typename T>
+template <typename V>
 inline pybind11::array_t<V> numpy_circular_buffer<T>::to_array(ptrdiff_t offset)
 {
     static_assert(std::is_scalar<V>::value, "scalar type is expected as array element!");
