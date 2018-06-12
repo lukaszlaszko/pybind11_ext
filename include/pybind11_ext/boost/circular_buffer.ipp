@@ -1,10 +1,8 @@
 #pragma once
 
 #include <boost/circular_buffer.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/uuid/uuid_generators.hpp>
 
 #include <list>
 #include <memory>
@@ -96,10 +94,8 @@ inline pointer_type allocated_block::pointer()
 
 std::string allocated_block::generate_shm_key()
 {
-    static boost::uuids::random_generator generator;
-    auto id = generator();
-
-    return boost::lexical_cast<std::string>(id);
+    auto temp = boost::filesystem::unique_path();
+    return temp.native();
 }
 
 template <typename element_type>
