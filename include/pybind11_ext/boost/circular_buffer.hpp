@@ -47,6 +47,10 @@ private:
 
 };
 
+/**
+ * @brief Represents a numpy enabled circular buffer.
+ * @tparam T Type of buffer element.
+ */
 template <typename T>
 class numpy_circular_buffer : public boost::circular_buffer<T, allocator<T>>
 {

@@ -136,7 +136,7 @@ inline size_t numpy_circular_buffer<T>::round_to_page_size(size_t capacity)
 
 template <typename T>
 template <typename V>
-inline readonly_memoryview numpy_circular_buffer<T>::to_memoryview(ptrdiff_t offset)
+inline pybind11::readonly_memoryview numpy_circular_buffer<T>::to_memoryview(ptrdiff_t offset)
 {
     auto first_element = base_circular_buffer::array_one();
     pybind11::buffer_info buffer(
