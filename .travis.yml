@@ -6,6 +6,7 @@ env:
     - BOOST_VERSION=1.65.1
     - BOOST_URL="https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
     - CODECOV=no
+    - CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Debug"
 
 cache:
     directories:
@@ -95,17 +96,17 @@ matrix:
             - python3.6-dev
             - lcov
 
-    - os: osx
-      osx_image: xcode9.3
-      env: BUILD_TYPE=Debug PYTHON=3.6
-
-    - os: osx
-      osx_image: xcode9.2
-      env: BUILD_TYPE=Debug PYTHON=3.6
-
-    - os: osx
-      osx_image: xcode9.1
-      env: BUILD_TYPE=Debug PYTHON=3.6
+#    - os: osx
+#      osx_image: xcode9.3
+#      env: BUILD_TYPE=Debug PYTHON=3.6
+#
+#    - os: osx
+#      osx_image: xcode9.2
+#      env: BUILD_TYPE=Debug PYTHON=3.6
+#
+#    - os: osx
+#      osx_image: xcode9.1
+#      env: BUILD_TYPE=Debug PYTHON=3.6
 
 
 before_install:
@@ -169,8 +170,10 @@ install:
       if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
         export PYTHON_EXECUTABLE="/usr/local/bin/python${PYTHON}"
       else
-        export PYTHON_EXECUTABLE="python${PYTHON}"
+        export PYTHON_EXECUTABLE="/usr/bin/python${PYTHON}"
       fi
+
+      export CMAKE_OPTIONS=${CMAKE_OPTIONS}" -DPYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}"
 
       curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
       ${PYTHON_EXECUTABLE} get-pip.py --user
