@@ -92,7 +92,7 @@ inline pointer_type allocated_block::pointer()
     return reinterpret_cast<pointer_type>(first_map_);
 }
 
-std::string allocated_block::generate_shm_key()
+inline std::string allocated_block::generate_shm_key()
 {
     auto temp = boost::filesystem::unique_path();
     return temp.native();
@@ -108,7 +108,7 @@ inline typename allocator<element_type>::pointer_type allocator<element_type>::a
 }
 
 template <typename element_type>
-void allocator<element_type>::deallocate(allocator::pointer_type p, size_t n)
+inline void allocator<element_type>::deallocate(allocator::pointer_type p, size_t n)
 {
     allocated_blocks_.remove_if([&](allocated_block& tested) { return tested.template pointer<pointer_type>() == p; });
 }
