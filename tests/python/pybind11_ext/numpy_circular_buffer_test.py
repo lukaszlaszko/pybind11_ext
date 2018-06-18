@@ -1,4 +1,4 @@
-import _circular_buffer_test as fixtures
+import _numpy_circular_buffer_test as fixtures
 import numpy as np
 from hamcrest import *
 
