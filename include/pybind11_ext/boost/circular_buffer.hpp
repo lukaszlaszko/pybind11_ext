@@ -1,9 +1,6 @@
 #pragma once
 
-#include <pybind11_ext/readonly_memoryview.hpp>
-
 #include <boost/circular_buffer.hpp>
-#include <pybind11/numpy.h>
 
 #include <list>
 #include <string>
@@ -58,12 +55,6 @@ public:
     explicit numpy_circular_buffer(size_t capacity);
 
     numpy_circular_buffer(const numpy_circular_buffer& other) = delete;
-
-    template <typename V = T>
-    pybind11::readonly_memoryview to_memoryview(ptrdiff_t offset = 0u);
-
-    template <typename V = T>
-    pybind11::array_t<V> to_array(ptrdiff_t offset = 0u);
 
 private:
     using base_circular_buffer = boost::circular_buffer<T, allocator<T>>;

@@ -1,4 +1,4 @@
-#include <pybind11_ext/boost/circular_buffer.hpp>
+#include <pybind11_ext/numpy_circular_buffer.hpp>
 
 #include <boost/optional.hpp>
 #include <pybind11/pybind11.h>
@@ -12,7 +12,7 @@ using namespace std;
 namespace py = pybind11;
 
 
-PYBIND11_MODULE(_circular_buffer_test, m) {
+PYBIND11_MODULE(_numpy_circular_buffer_test, m) {
 
     struct alignas(32) custom_type
     {
@@ -40,7 +40,7 @@ PYBIND11_MODULE(_circular_buffer_test, m) {
             .def_property_readonly("capacity", &int_circular_buffer::capacity)
             .def_property_readonly("array", [](int_circular_buffer& self)
                     {
-                        return self.to_array();
+                        return py::to_array(self);
                     });
 
     py::class_<custom_circular_buffer>(m, "CustomCircularBuffer")
@@ -56,15 +56,15 @@ PYBIND11_MODULE(_circular_buffer_test, m) {
             .def_property_readonly("capacity", &custom_circular_buffer::capacity)
             .def_property_readonly("index_array", [](custom_circular_buffer& self)
                     {
-                        return self.to_array<int>(offsetof(custom_type, index));
+                        return py::to_array<custom_type, int>(self, offsetof(custom_type, index));
                     })
             .def_property_readonly("has_value_array", [](custom_circular_buffer& self)
                     {
-                        return self.to_array<bool>(offsetof(custom_type, has_value));
+                        return py::to_array<custom_type, bool>(self, offsetof(custom_type, has_value));
                     })
             .def_property_readonly("value_array", [](custom_circular_buffer& self)
                     {
-                        return self.to_array<double>(offsetof(custom_type, value));
+                        return py::to_array<custom_type, double>(self, offsetof(custom_type, value));
                     });
 
 }
